@@ -28,7 +28,7 @@ twitter_username: nd_lombardi
 github_username:  MrWeb
 
 # Build settings
-theme: jekyll-theme-architect #minima
+theme: minima #jekyll-theme-architect
 plugins:
   - jekyll-feed
 
