@@ -2,7 +2,7 @@
 layout: post
 title:  "PHP vCard iOS and mobile download"
 date:   2020-05-27 12:24:48 +0200
-categories: php vcard
+categories: php
 ---
 
 I recently struggled in trying to implement a vCard download on iOS from a PHP web application, and this is the reason for this post.
