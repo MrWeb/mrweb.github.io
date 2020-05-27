@@ -7,7 +7,7 @@ categories: php
 
 I recently struggled in trying to implement a vCard download on iOS from a PHP web application, and this is the reason for this post.
 
-I'm using the package <a href="https://github.com/jeroendesloovere/vcard" target="_blank">`https://github.com/jeroendesloovere/vcard`</a> with the function `download()` this caused a bug on the iPhone where the VCF gets turned into a VCF.html and is not readable.
+I'm using the package <a href="https://github.com/jeroendesloovere/vcard" target="_blank">https://github.com/jeroendesloovere/vcard</a> with the function `download()` this caused a bug on the iPhone where the VCF gets turned into a VCF.html and is not readable.
 
 This is a method I was using that caused the issue:
 
