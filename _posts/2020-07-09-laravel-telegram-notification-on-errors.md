@@ -2,14 +2,14 @@
 layout: post
 title:  "Laravel Telegram Notification on Error"
 date:   2020-07-09 08:24:48 +0100
-categories: php, laravel
+categories: php laravel
 ---
 
 I'm working on an important project and I had the need to keep track of errors in real time.
 
 The best option I found is to create a Telegram Bot, that every time a production error happens it sends me the first part of the error stack along with the user who fired it, his whatsapp number (so that I can click and start chat directly in case I need to) and the exact url it happened at.
 
-![image](assets/tg-bot-error.png)
+![image](/assets/tg-bot-error.png)
 
 To do this I installed the package [laravel-notification-channels](https://github.com/laravel-notification-channels/telegram), created a TelegramBot, set the API in the `.env` (as explained in the package installation) and my `chat_id` inside `app\User`
 
