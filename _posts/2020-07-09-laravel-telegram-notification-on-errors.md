@@ -1,16 +1,18 @@
 ---
 layout: post
-title:  "Laravel Telegram Notification on Error"
-date:   2020-07-09 08:24:48 +0100
-categories: php laravel
+title:  "Laravel Telegram Notification on Errors"
+date:   2020-07-09 08:24:48 +0200
+categories: laravel
 ---
 
-I'm working on an important project and I had the need to keep track of errors in real time.
+I'm working on an important project and I have the need to keep track of errors in real time.
 
-The best option I found is to create a Telegram Bot, that every time a production error happens it sends me the first part of the error stack along with the user who fired it, his whatsapp number (so that I can click and start chat directly in case I need to) and the exact url it happened at.
+I thought to myself **How can I track Laravel error in realtime?** and the best option I came up with is to create a Telegram Bot, that every time a production error happens it sends me the first part of the error stack along with the user who fired it, his whatsapp number (so that I can click on the person's name and start a chat directly) and the exact url it happened at.
 
-![image]({{ BASE_PATH }}/assets/tg-bot-error.png)
+And this is the result:
 
+![image](/images/tg-bot-error.png)
+<br><br><br>
 To do this I installed the package [laravel-notification-channels](https://github.com/laravel-notification-channels/telegram), created a TelegramBot, set the API in the `.env` (as explained in the package installation) and my `chat_id` inside `app\User`
 
 ```php
@@ -20,6 +22,9 @@ public function routeNotificationForTelegram()
 }
 ```
 
+> As a note: Telegram chat_id is the same for every Bot and chat you create, is actually your very Telegram ID which will stay the same unless you create another account.
+
+<br><br>
 Then I've extended the `report()` method inside `app/Exceptions/Handler.php` of my Project to look like this:
 
 ```php
