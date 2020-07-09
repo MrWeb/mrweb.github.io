@@ -5,43 +5,31 @@ date:   2020-07-09 08:24:48 +0100
 categories: php, laravel
 ---
 
-I recently struggled in trying to implement a vCard download on iOS from a PHP web application, and this is the reason for this post.
+I'm working on an important project and I had the need to keep track of errors in real time.
 
-I'm using the package <a href="https://github.com/jeroendesloovere/vcard" target="_blank">https://github.com/jeroendesloovere/vcard</a> with the function `download()` this caused a bug on the iPhone where the VCF gets turned into a VCF.html and is not readable.
+The best option I found is to create a Telegram Bot, that every time a production error happens it sends me the first part of the error stack along with the user who fired it, his whatsapp number (so that I can click and start chat directly in case I need to) and the exact url it happened at.
 
-This is a method I was using that caused the issue:
 
-```php
-$contact = ContactModel::where('id', $contact_id)->firstOrFail();
 
-$lastname  = $contact->lname;
-$firstname = $contact->fname;
-$prefix    = $contact->title;
+To do this I installed the package [laravel-notification-channels](https://github.com/laravel-notification-channels/telegram), created a TelegramBot, set the API and my `chat_id`.
 
-$vcard = new VCard();
-$vcard->addName($lastname, $firstname, null, $prefix, null);
-$vcard->addPhoneNumber($contact->phone_1, 'PREF;WORK');
-$vcard->addPhoneNumber($contact->phone_2, 'WORK');
-$vcard->addEmail(strtolower($contact->email_1));
-$vcard->addEmail(strtolower($contact->email_2));
-$vcard->addAddress(null, null, $contact->address ?? '', $contact->zone->name ?? '', null, $contact->zone->ZIP ?? '', $contact->zone->country ?? '');
-
-$vcard->download();
-```
-
-I found out the problem is because of wrong headers sent by the `download()` function in the `vcard` package.
-
-To solve this issue you can manually set the headers (I'm using Laravel in this project but this applies to any plain PHP project as well) and instead of using the `download()` function we just return the output:
+Then I've extended the `report()` method inside `app/Exceptions/Handler.php` of my Project to look like this:
 
 ```php
-#same code as above but instead of $vcard->download(); we now do
+public function report(Throwable $exception)
+{
+    parent::report($exception);
+    if (app()->isProduction() && auth()->id()) {
+        $cut_exception = explode("\n", $exception)[0];
 
-$response = new Response();
-$response->setContent($vcard->getOutput());
-$response->setStatusCode(200);
-$response->headers->set('Content-Type', 'text/x-vcard');
-$response->headers->set('Content-Disposition', 'attachment; filename="' . $contact_id . '.vcf"');
-$response->headers->set('Content-Length', mb_strlen($vcard->getOutput(), 'utf-8'));
+        $app         = config('app.name');
+        $user        = auth()->id();
+        $name        = auth()->user()->full_name;
+        $phone       = ltrim(str_replace(' ', '', auth()->user()->phone), '0');
+        $current_url = url()->current();
 
-return $response;
+        $mrweb = User::find(1)
+            ->notify(new TelegramNotification("*{$app}*\nUser #{$user} [{$name}](https://wa.me/{$phone})\n\n{$current_url}\n\n`{$cut_exception}`"));
+    }
+}
 ```
