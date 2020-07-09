@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Laravel Telegram Notification on Errors"
+title:  "Telegram Notification on Laravel Error"
 date:   2020-07-09 08:24:48 +0200
 categories: laravel
 ---
